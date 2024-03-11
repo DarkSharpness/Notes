@@ -150,6 +150,8 @@ void my_algorithm(value_t *__arr) {
 
 当 $N = 2^k,~ k\ge 1$ 时 以上这个算法可以同时求出最小值和第二小的值.
 
+[Check it out online!](https://godbolt.org/z/5vTKWEsE5)
+
 ## 复杂度 (Compare 次数)
 
 ### find_min

@@ -32,13 +32,15 @@ Some more details(RISC-V-Reader-Chinese-v2p1 Page 110):
 
 ![Cause Register](image/xv6/1709709281157.png)
 
-
 When it needs to force a trap, the RISC-V hardware does the following for all trap types (other than timer interrupts):
-1. If the trap is a device interrupt, and the sstatus SIE bit is clear, don’t do any of the following.
-2. Disable interrupts by clearing SIE. 
-3. Copy the pc to sepc. 
-4. Save the current mode (user or supervisor) in the SPP bit in sstatus. 
-5. Set scause to reflect the interrupt’s cause. 
-6. Set the mode to supervisor. 
+
+1. If the trap is a device interrupt, and the sstatus SIE bit is clear, don't do any of the following.
+2. Disable interrupts by clearing SIE.
+3. Copy the pc to sepc.
+4. Save the current mode (user or supervisor) in the SPP bit in sstatus.
+5. Set scause to reflect the interrupt's cause.
+6. Set the mode to supervisor.
 7. Copy stvec to the pc.
 8. Start executing at the new pc.
+
+> Remarks: E = Enable/Exception. I = Interrupt. M = Machine. S = Supervisor. U = User.
