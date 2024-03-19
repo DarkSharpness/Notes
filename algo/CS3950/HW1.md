@@ -83,7 +83,9 @@ $$
 
 ## b
 
-首先, 对于第 $i$ 小和 第 $j$ 小的元素 $x_i$ 和 $x_j$ , 只有当 $x_i$ 或 $x_j$ 是 $x_i,x_{i+1},\cdots,x_j$ 中第一个被选中的 pivot 时, 才会贡献一次比较. 而由于是均等随机, 所以这个概率是 $\frac 2 {j - i + 1}$. 因此, 期望比较次数为:
+首先, 对于第 $i$ 小和 第 $j$ 小的元素 $x_i$ 和 $x_j$ , 只有当 $x_i$ 或 $x_j$ 是 $x_i,x_{i+1},\cdots,x_j$ 中第一个被选中的 pivot 时, 才会贡献一次比较, 否则没有任何比较. 原因是当选中 $x_i,x_j$ 中某个元素的时候, 另外那个会被分到下面继续递归, 但被选中的不会参与递归, 不会再比较. 如果选中之间的, 那么, $x_i,x_j$ 会被分到两边, 之后就没有比较.
+
+而由于是均等随机, 所以这个概率是 $\frac 2 {j - i + 1}$. 因此, 期望比较次数为:
 
 $$
 \begin{aligned}
@@ -417,7 +419,7 @@ List: Thinking time + writing time.
 - T1: $0\text{min} + 15\text{min}$
 - T2: $5\text{min} + 10\text{min}$
 - T3: $5\text{min} + 25\text{min}$
-- T4: $30\text{min} + 20\text{min}$
+- T4: $30\text{min} + 30\text{min}$
 - T5: $5\text{min} + 15\text{min}$
 
 Summary: too fucking hard. Difficulty = 5.
