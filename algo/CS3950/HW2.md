@@ -160,8 +160,161 @@ So, the total time complexity is $\mathcal{O}(V+E)$.
 
 # T3
 
+## a
 
+$\max(|H(G)| , |T(G)|)$. First, if $|H(G)| \ne 0$, then there exists a point which can never be reaches by others. So is the case $|T(G)| \ne 0$.
 
+Unfortunately, when adding a new edge, we can only eliminate at most one point from $H(G)$ or $T(G)$, so at least we need $\max(|H(G)| , |T(G)|)$ edges to clear all the points in $H(G)$ or $T(G)$.
+
+So, the lower bound is $\max(|H(G)| , |T(G)|)$.
+
+Then we will prove it is achievable (tight).
+
+If $|T(G)| = 0$, then starting from any vertix $u$, we choose any one of the vertices $v$ that has edge $(u,v)$ . If $v$ has been visited, then the DAG has a cycle, which is impossible.
+
+So, $|T(G)| \ne 0$. Reverse the graph, and we can also prove that $|H(G)| \ne 0$.
+
+Note that starting from any vertix $u$, since there's no cycle, we can walk along the edges until we reach a point that cannot reach others, which is in $T(G)$.
+
+So, we may easily conclude that for any vertex $u$, we can arrive at a point in $T(G)$. Reverse the graph, and we can conclude that for any vertex $v$, we can be reached from a point in $H(G)$.
+
+So, as long as $H(G)$ and $T(G)$ is strongly-connected, then we can always find a path from any vertex to any other vertex, which means the graph is strongly-connected.
+
+Without a loss of generality, we may assume that $m = |H(G)| \ge |T(G)| = n$.
+
+We denote the vertices in $H(G)$ as $h_1,\cdots,h_m$, and the vertices in $T(G)$ as $t_1,\cdots,t_n$.
+
+Then, we connect $t_i$ to $h_i$ for $i = 1,\cdots,n$, and connect $t_n$ to $h_i$ for $i = n+1,\cdots,m$.
+
+Since the graph is fully reachable, we for any $h_i,h_j$, we may travel from $h_i$ to $t_{\min(j,n)} $, and then travel to $h_j$. So any $h_i$ can reach each other.
+
+Similarly, $t_i$ can reach $t_j$, by first travelling from $t_i$ to $h_i$, and then travelling to $t_j$.
+
+Finally, for $t_i$ and $h_j$, we may travel from $t_i$ to $h_i$, and then travel to $h_j$.
+
+So, $H(G)$ and $T(G)$ is strongly-connected now, and consequently, the graph is strongly-connected.
+
+In conclusion, the upper bound is $\max(|H(G)| , |T(G)|)$.
+
+## b
+
+By definition, there exist $h \in H(G), t \in T(G)$, such that there's no path from $h$ to $t$.
+
+Then, we may add an edge $(t,h)$ to the graph. If a new cycle is generated, then it must contain the edge $(t,h)$, which means there's a path from $h$ to $t$. But this contradicts the assumption. So, no new cycle is generated, and the graph is still a DAG.
+
+In addition, we may trivially find that $H'(G) = H(G) - \{h\}$ and $T'(G) = T(G) - \{t\}$. So $|H'(G)| = |H(G)| - 1$ and $|T'(G)| = |T(G)| - 1$.
+
+## c
+
+Here comes our algorithms:
+
+Scanning all edges, update the in-degree and out-degree of each vertex. Then count all vertices with in-degree $0$ and out-degree $0$, and we get $|H(G)|$ and $|T(G)|$.
+
+Return $\max(|H(G)|, |T(G)|)$.
+
+### Correctness
+
+According to the conclusion in (b), when the graph is not fully reachable, we may repeat the operation in (b) until the graph is fully reachable.
+
+However, we need to prove that the graph will eventually become fully reachable.
+
+Note that when $|T(G)| = 1$, starting from any vertix, walking along the edges, since there's no cycle, we will eventually reach the only point in $T(G)$. So, at this time, the graph is fully reachable.
+
+Similarly, when $|H(G)| = 1$, the graph is fully reachable.
+
+So, when we repeat the operation in (b), in the worst case, $|T(G)| = 1$ or $|H(G)| = 1$, the graph will be fully reachable naturally. That means the graph will eventually become fully reachable.
+
+Suppose it need $k$ operations to make the graph fully reachable. Then $|H'(G)| = |H(G)| - k$ and $|T'(G)| = |T(G)| - k$. The minimum number of edges we need to add is $\max(|H'(G)|, |T'(G)|) = \max(|H(G)| - k, |T(G)| - k) = \max(|H(G)|, |T(G)|) - k$.
+
+So in all, we add $\max(|H(G)|, |T(G)|) - k + k = \max(|H(G)|, |T(G)|)$ edges.
+
+Since the proof in (a) that $\max(|H(G)|, |T(G)|)$ is the lower bound doesn't require the graph to be fully reachable, so it still holds true in this case.
+
+So the minimum number of edges we need to add is $\max(|H(G)|, |T(G)|)$.
+
+### Time Complexity
+
+The time complexity involves scanning all edges and vertices in linear time, so the overall time complexity is $\mathcal{O}(V+E)$.
+
+## d
+
+Using the algorithm kosaraju in class, we may find all strongly connected components (SCC) in the graph.
+
+We will then compress those vertices in the same SCC into one super vertex, erasing in-SCC edges, and replace across-SCC edges with a new edge (also remove all duplicates).
+
+The new graph is a DAG, since there's no more SCC in the graph.
+
+Then we may apply the algorithm in (c) to find the minimum number of edges we need to add to make the graph fully reachable.
+
+### Correctness
+
+We just need to prove that the algorithm in (c) still gives the correct answer.
+
+First, if the graph is strongly connected after compression and adding new edges between super vertixs, then, adding those new edges only is enough to make the graph fully reachable. (Specially, an edge $(scc[i],scc[j])$ should be transformed into an arbitary edge $(x,y)$, where $x \in scc[i], y \in scc[j]$) 
+
+This is true because if any 2 SCCs are reachable, then any of the vertices in the 2 SCCs are reachable, and consequently, the graph is fully reachable.
+
+This shows that our algorithm's correctness is guaranteed.
+
+Next, we will show that if the graph is strongly connected after adding new edges, then the super graph after compression and adding new edges between super vertixs is also strongly connected. (Specially, an edge $(i, j)$ should be transformed into an arbitary edge $(x , y)$, where $x$ is the SCC that $i$ belongs to, and $y$ is the SCC that $j$ belongs to)
+
+This is true because if any 2 vertices are reachable, then trivially any 2 SCCs are reachable, and consequently, the super graph is also strongly connected.
+
+This shows that out's algorithm's bound is still tight.
+
+### Time Complexity
+
+The time complexity of kosaraju's algorithm is $\mathcal{O}(V+E)$.
+
+The time complexity of the algorithm in (c) is $\mathcal{O}(V'+E')$.
+
+In the super graph, $V' \le V$, and $E' \le E$. So, the overall time complexity is $\mathcal{O}(V+E)$.
+
+# T4
+
+## a
+
+If $G$ is a tree, then the depth-first-search tree is the same as the original tree. So is the breadth-first-search tree.
+
+If $G$ is not a tree, then the depth-first-search tree contains at least one back edge. Consider the back edge $(v,u)$ and the tree edge $(w,v)$. $u$ is the ancestor of $v$, and $w$ is the parent of $v$, and $u$ is the ancestor of $w$.
+
+If those 2 trees are equal, in the breadth-first-search tree: after $u$ is visited, $v$ will be visited no later than $w$, so $v$ cannot be the child of $w$. 
+
+In conclusion, in undirected graphs, the depth-first-search tree and breadth-first-search tree are equal iff the graph is a tree.
+
+## b
+
+![1711383352068](image/HW2/1711383352068.png)
+
+This is a counterexample. This is a acyclic directed graph.
+
+![1711383298218](image/HW2/1711383298218.png)
+
+The depth-first-search tree and breadth-first-search tree can be identical.
+
+However, the distance of vertex $1$ is $1$, while the distance of vertex $2$ is $2$. So, $2$ must is bigger than $1$ in ascending order of distance. However, in topological order, $2$ should be visited before $1$.
+
+## c
+
+![1711385813639](image/HW2/1711385813639.png)
+
+This is a counterexample. The distance of vertex $1,2$ is $1$, while the distance of vertex $3,4$ is $2$. So the breadth-first-search tree is shown as below:
+
+![1711385863790](image/HW2/1711385863790.png)
+
+However, if you search vertex $1$ first, then vertex $2$ cannot be at the same level as vertex $1$. It must be a child of vertex $1$. So the depth-first-search tree will not be the same as the breadth-first-search tree.
+
+If you search by vertex $2$ first, you will sadly get a tree as below:
+
+![1711386003421](image/HW2/1711386003421.png)
+
+Whatever you do, the depth-first-search tree will not be the same as the breadth-first-search tree.
+
+So, the converse of the statement is not true either.
+
+# T5
+
+TODO...
 
 # T6
 
@@ -169,3 +322,6 @@ Timing: (Thinking + Writing)
 
 1. : $1\text{min} + 10\text{min}$
 2. : $5\text{min} + 55\text{min}$
+3. : $15\text{min} + 35\text{min}$
+4. : $30\text{min} + 10\text{min}$
+5. :
