@@ -314,7 +314,75 @@ So, the converse of the statement is not true either.
 
 # T5
 
-TODO...
+## a
+
+<!-- 
+Find the smallest cycle in an unweighted, undirected graph, containing certain vertex $s$
+ -->
+
+We may enumerate all vertices adjancent to $s$, and assign them with number $1,2,\cdots,n_0$, distance $1$.
+
+Then, we start bfs from these vertices. We keep track of which number first reached the vertex and the distance from $s$ to the vertex.
+
+When we bfs out (take the first vertex out from the queue) from a vertex which is numbered $x$, distance $y$, there are 3 cases:
+
+- We reach $s$ or a vertex numbered $x$. Just skip this vertex.
+- We reach a vertex which has not yet been visited(not numbered yet). Assign it with number $x$, distance $y$. Push it into our queue.
+- We reach a vertex which has been visited. If the number is $z$, distance is $w$, then we find a shortest cycle with length $y+w+1$.
+
+If we have visited all vertices, then we may conclude that there's no cycle containing $s$.
+
+### Time Complexity
+
+This algorithm is similar to bfs. First of all, all vertices will be numbered at most once, and a vertex will be visited only when numbered. So, we may conclude that each vertex will be visited at most once, which means the time complexity is $\mathcal{O}(|V|)$.
+
+Also, consider the operation in each visit, it will take a look at all the edges of the vertex. So, the overall operation of that equals to the sum of all edges' degree, which is $2|E|$, the time complexity is $\mathcal{O}(|E|)$.
+
+So, the overall time complexity is $\mathcal{O}(|V|+|E|)$.
+
+### Correctness
+
+The correcteness of shortest distance is proved in class (bfs).
+
+#### Abililty to find a valid cycle
+
+First, we prove that the algorithm can find a cycle containing $s$.
+
+We denote $(a,b,c)$ as a vertex $a$ numbered $b$ and distance $c$.
+
+Take a look at the case when we output the result on a visit from $(a,x,y)$ to $(b,z,w)$.
+
+First, $a$ must been updated from another vertex $a'$, where $a'$ is numbered $x$, distance $y - 1$ by our algorithm, or $a$ is adjacent to $s$.
+
+So, there exists a path from $s$ to $a$, which contains only vertices numbered $x$, and the length is $y$.
+
+Similarly, there's path from $s$ to $b$, which contains only vertices numbered $z$, and the length is $w$.
+
+So, consider these $2$ paths, the only shared vertex is $s$, and there is an edge between $a$ and $b$. So, there is a cycle containing $s$, whose length is $y+w+1$.
+
+#### Abililty to find the shortest cycle
+
+Then, we prove that the algorithm can find the shortest cycle. If the shortest cycle is $s, v_1, \cdots, v_m, s$, then we claim that the algorithm will find it.
+
+Let $p = \lfloor \frac{m}{2} \rfloor$. 
+
+If the algorithm ends before $p$ rounds, the cycle size found can not exceed $2(p - 1) + 1 \lt m$, which contradicts the assumption that the shortest cycle size is $m$.
+
+So, the algorithm must be end after $p$ rounds.
+
+If $v_1, \cdots, v_p$ are not numbered as $v_1$, suppose $g$ is the smallest that satisfy $v_g$ is numbered as $v_1$. Then, $v_{g-1}$ is numbered as $v_1$. When bfs from $v_{g-1}$ in $g$ round, since $v_g$ is not numbered as $v_{g-1}$, our algorithm find a circle! However, we have proved that our algorithm should not end before $p$ rounds. Contradiction!
+
+So, it's easy to see that $v_1, \cdots, v_p$ must be numbered as $v_1$. Similaryly, $v_m, v_{m-1}, \cdots, v_{m-p+1}$ must be numbered as $v_m$.
+
+If $p$ is even, then in $p$ round, we will visit $v_{p+1}$ from $v_p$ or in a reverse manner. In our algorithm, since they are different numbered, we find that cycle. And the output will be $p + p + 1 = 2p + 1 = m + 1$.
+
+The similarly is true for $p$ is odd, where $v_{p+1}$ will be visited from $v_p$ and $v_{p+2}$ successive. And the output will be $p + p + 2 = 2p + 2 = m + 1$.
+
+Note that $m + 1$ is the length of the shortest cycle. So, the algorithm will find the shortest cycle in $p$ round. (If the shortest cycle is not unique, then the algorithm will find just one of them and stop).
+
+## b
+
+IDK. Maybe [abelcat](https://github.com/abelcategory) has told me the answer, but I shouldn't copy his answer.
 
 # T6
 
@@ -324,4 +392,8 @@ Timing: (Thinking + Writing)
 2. : $5\text{min} + 55\text{min}$
 3. : $15\text{min} + 35\text{min}$
 4. : $30\text{min} + 10\text{min}$
-5. :
+5. : $10\text{min} + 20\text{min}$
+
+Difficulty: $5/5$
+
+Collabrator: Github Copilot
