@@ -1,5 +1,18 @@
 # T1
 
+## Some Warnings!
+
+**ATTENTION!**
+
+**ATTENTION!**
+
+**ATTENTION!**
+
+
+I misunderstood the meaning of CHATGPT. Thanks to Yuhao Zhang, I fixed my understanding. So you may just ignore the ABOUT CHATGPT section below and just see my solution.
+
+I will prove later that my solution is the same as CHATGPT in some way.
+
 ## About CHATGPT
 
 First, I'm sorry to say that CHATGPT is BS-ing. The counter example comes as follows:
@@ -105,11 +118,40 @@ Also, we have proved that any best choice must be a "perfect" choice, but the ou
 
 If stock prices are not distinct, the proof process is similar, and it's too long to write again here...
 
-### Some comments
+<!-- ### Some comments -->
 
-The core algorithm only took me about $10 \text{min}$. It is easy to be observed with the hint of the given CHATGPT algorithm. However, the correctness of this algorithm is lunatic to prove. I even write a small program to verify the correctness of this algorithm. It did pass all the sample tests. But I still could not prove it out.
+<!-- The core algorithm only took me about $10 \text{min}$. It is easy to be observed with the hint of the given CHATGPT algorithm. However, the correctness of this algorithm is lunatic to prove. I even write a small program to verify the correctness of this algorithm. It did pass all the sample tests. But I still could not prove it out. -->
 
-The final idea caught me after three hell-like hours. Are you serious?
+<!-- The final idea caught me after three hell-like hours. Are you serious? -->
+
+## End proof
+
+Finally, I'm going to prove that my solution is equal to that of CHATGPT.
+
+First, the min-element in min-heap must be identical in my algorithm and CHATGPT's, except those sold-out have an extra backup in CHATGPT's min-heap. This can be proved by induction.
+
+It holds true when $n = 1$.
+
+If holds true for $n = k$, then for $n = k + 1$, case analysis:
+
+- min element $p_x$ no less than current $p_{k+1}$, so both algorithm simply insert $k + 1$ as unsold. So it still holds true in $n = k + 1$.
+
+- min element $p_x$ less than $p_{k+1}$. Then $p_{k+1}$ will be marked as sold-out and has an additional backup.
+
+    + If the $p_x$ is sold-out, in our algorithm, we will simply reset $p_x$ from sold-out. And in CHATGPT's algorithm, it will remove exactly one backup, leaving behind one another in the min-heap (due to induction hypothesis). The new heap still satisfies the assumption, so induction still holds.
+
+    + If otherwise, our algorithm will pop it out of heap and mark as buy-out. In CHATGPT's algorithm, it will pop out the only backup (due to induction hypothesis) from the heap. The new heap still satisfies the assumption, so induction still holds.
+
+Consequently, by induction, we can trivially see that both algorithm choose the same elements and output the same answer. Since we have proved that our algorithm is the best, so is CHATGPT!
+
+
+## Apology
+
+Sorry for a twisted proof which may be far different from standard answer.
+
+I'm too exhausted to write as perfect a proof as the proof above. I'm mad after 3 hours spent on this problem due to the bloody misundestanding.....
+
+Special thanks to Yuhao Zhang !
 
 # T2
 
@@ -120,7 +162,6 @@ If we define $C(y)$ as the number of bits of $y$ that are $1$, then it's trivial
 So we may let the potential function be $f(y) = C(y)$. The cost of an operation is $x + 1 = 2 - \Delta C$. Also, the potential function is always non-negative, and can grow at most $1$ in each operation. So we can claim that the amortized cost is $O(1)$ using the potential function $f(y) = C(y)$.
 
 # T3
-
 
 # T4
 
@@ -135,3 +176,5 @@ Time distribution (Thinking + Writing):
 Difficulty: $5/5$.
 
 Comment: Very hard greedy problem. Make my brain spin.
+
+Collaborators: Yuhao Zhang
