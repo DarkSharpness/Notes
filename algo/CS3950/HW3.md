@@ -38,7 +38,7 @@ $$
 
 Specially, we have $f(0, 0) = 0$ and other $f(0, j) = -\infty$.
 
-This trivially holds true, and the time complexity is $O(n^2)$.
+This trivially holds true, and the time complexity is $\mathcal{O}(n^2)$.
 
 ### An improved solution of CHATGPT
 
@@ -60,7 +60,7 @@ The chatgpt is already doing a good job, except it fails to reconsider some elem
 
 The only difference is that for those "sold-out" elements, if they are cheaper than the current stock price, they will not be poped out, but just reset to be not sold-out.
 
-It's obivious that the time complexity is $O(n \log n)$ (since we only insert and pop elements from the min-heap).
+It's obivious that the time complexity is $\mathcal{O}(n \log n)$ (since we only insert and pop elements from the min-heap).
 
 The hardest part is to prove the correctness of this algorithm.
 
@@ -159,13 +159,13 @@ If the carry process of an addition happens $x$ times in the addition process of
 
 If we define $C(y)$ as the number of bits of $y$ that are $1$, then it's trivial to see that $C(y + 1) = C(y) + 1 - x$ (due to the fact that $1$ bit is flipped to $1$ and $x$ bits are flipped to $0$). It means that $\Delta C = 1 - x$.
 
-So we may let the potential function be $f(y) = C(y)$. The cost of an operation is $x + 1 = 2 - \Delta C$. Also, the potential function is always non-negative, and can grow at most $1$ in each operation. So we can claim that the amortized cost is $O(1)$ using the potential function $f(y) = C(y)$.
+So we may let the potential function be $f(y) = C(y)$. The cost of an operation is $x + 1 = 2 - \Delta C$. Also, the potential function is always non-negative, and can grow at most $1$ in each operation. So we can claim that the amortized cost is $\mathcal{O}(1)$ using the potential function $f(y) = C(y)$.
 
 # T3
 
 ## (a)
 
-If the assertion is not true, we may assume that there exists two maximal independent sets $A$ and $B$ such that $|A| \lt |B|$. By exchange property, there exists $x \in B - A$ such that $A \cup \{x\} \in \mathcal{I}$. Then, there exists a set $C = A \cup \{x\}$ such that $A \subsetneq C$, which contradicts the assumption that $A$ is maximal.
+If the assertion is not true, we may assume that there exists two maximal independent sets $A$ and $B$ such that $|A| \lt |B|$. By exchange property, there exists $x \in B - A$ such that $A + \{x\} \in \mathcal{I}$. Then, there exists a set $C = A + \{x\}$ such that $A \subsetneq C$, which contradicts the assumption that $A$ is maximal.
 
 ## (b)
 
@@ -175,11 +175,11 @@ Let G = (V, E) be a simple undirected graph. Let M = (E, S) where S = {F ⊆ E |
 
 Let's prove that $M = (E, \mathcal{S})$ satisfies the 2 properties of matroid:
 
-First, if $A \in \mathcal{S}$, then for any $B \subset A$, since subgraph $A$ does not contains a cycle, the subgraph of subgraph $A$, $B$ should never contain a cycle either (I think this is too trivial. If $B$ contains a cycle with edges $\{e_1,\cdots,e_k\}$, then since $B \subset A$, $A$ should contains edges $\{e_1,\cdots,e_k\}$ too, which means $A$ contains a cycle, which contradicts the fact that $A \in \mathcal{S}$ a.k.a $A$ has no cycle).
+First, if $A \in \mathcal{S}$, then for any $B \subseteq A$, since subgraph $A$ does not contains a cycle, the subgraph of subgraph $A$, $B$ should never contain a cycle either (I think this is too trivial. If $B$ contains a cycle with edges $\{e_1,\cdots,e_k\}$, then since $B \subseteq A$, $A$ should contains edges $\{e_1,\cdots,e_k\}$ too, which means $A$ contains a cycle, which contradicts the fact that $A \in \mathcal{S}$ a.k.a $A$ has no cycle).
 
 Second, if $|A| \lt |B|$, consider the connected blocks in $A$. We may divide $A$ into connected blocks $\{V_1, \cdots, V_n\}$. Since there's no cycle in graph $A$, based on some lemmas taught in Combinatorics last semester (a connected block $|V|$ should contain at least $|V| - 1$ edges ; an acyclic graph with vertices $V$ should contain at most $|V| - 1 edges; a connected block $|V| with exactly $|V| - 1$ edges is a tree), we may find that each block is a tree, so $|A| = (|V_1| - 1) + \cdots + (|V_n| - 1)$.
 
-Consider those blocks in $B$. In block $V_1$, since $B$ is acyclic, $B$ has at most $|V_1| - 1$ inter-block-$V_1$ edges. The same is the case with $V_2 \cdots, V_n$. So, in $B$, there are at most $(|V_1| - 1) + \cdots + (|V_n| - 1) = |A|$ inter-block edges (the block is based on $A$). However, $|B| \gt |A|$, so there must exists an intra-block edge $x$ for $B$. After adding this intra-block edge to $A$, we reduce the block number of $A$ by $1$, but we do not bring cycles since the edge is intra-block (between blocks). So, $A \cup \{x\} \in \mathcal{S}$.
+Consider those blocks in $B$. In block $V_1$, since $B$ is acyclic, $B$ has at most $|V_1| - 1$ inter-block-$V_1$ edges. The same is the case with $V_2 \cdots, V_n$. So, in $B$, there are at most $(|V_1| - 1) + \cdots + (|V_n| - 1) = |A|$ inter-block edges (the block is based on $A$). However, $|B| \gt |A|$, so there must exists an intra-block edge $x$ for $B$. After adding this intra-block edge to $A$, we reduce the block number of $A$ by $1$, but we do not bring cycles since the edge is intra-block (between blocks). So, $A + \{x\} \in \mathcal{S}$.
 
 Based on the proof above, we can claim now that $\mathcal{S}$ is a matroid.
 
@@ -187,7 +187,7 @@ Then we are going to explore all the maximals of $\mathcal{S}$.
 
 Suppose $(V,E)$ is composed of connected, disjoint subgraphs $(V_1,E_1), \cdots, (V_n,E_n)$. Based on the lemma in Combinatorics (an acyclic graph with vertices $V$ should contain at most $|V| - 1$ edges), the size of maximal should not exceed $(|V_1| - 1) + \cdots + (|V_n| - 1)$.
 
-For each connected component, there must exist at least one spanning tree. Suppose there are $T_1, \cdots T_n$ for those subgraphs. Then, it's easy to observe that $T = T_1 + \cdots + T_n$ is a acyclic subgraph of $(V,E)$, so it is an element of $\mathcal{S}$. Also, $|T| = (|V_1| - 1) + \cdots + (|V_n| - 1)$, which is maximal available size. Due to (a), the maximal's size is unique, so we may claim that each maximal has size $(|V_1| - 1) + \cdots + (|V_n| - 1)$.
+For each connected component, there must exist at least one spanning tree. Suppose there are $T_1, \cdots T_n$ for those subgraphs. Then, it's easy to observe that $T = T_1 + \cdots + T_n$ is an acyclic subgraph of $(V,E)$, so it is an element of $\mathcal{S}$. Also, $|T| = (|V_1| - 1) + \cdots + (|V_n| - 1)$, which is maximal available size. Due to (a), the maximal's size is unique, so we may claim that each maximal has size $(|V_1| - 1) + \cdots + (|V_n| - 1)$.
 
 Since, in each disjoint subgraph $(V_i, E_i)$, an element $M$ can contains at most $|V_i| - 1$ edges, so $|M| \le (|V_1| - 1) + \cdots + (|V_n| - 1)$. The equality holds when $M$ has exactly $|V_i| - 1$ edges in each disjoint subgraph $(V_i, E_i)$.
 
@@ -195,7 +195,67 @@ So, these maximals are sets which is composed of exactly one spanning tree in ea
 
 ## (c)
 
-<!-- TODO -->
+From now on, we abbreviate "a maximal independent set with maximal weight" to "maximal".
+
+Suppose $C$ is a maximal, which does not contain $x$ (if no such, we have already found a required maximal containing $x$, since there's finite independent set and such maximal must exist).
+
+Then let $S_1 = \{x\} \in \mathcal{I}$. If $|S_i| \lt |C|$, using exchange property, we can construct $S_{i + 1} = S_i + {y}, y \in C$ with the property $S_{i+1} \mathcal{I}$.
+
+Consider $D = S_{|C|}$, which has exactly the same size with $C$. Due to the construction process above, it should have exactly $1$ different element from $C$. Suppose that element in $C$ is $y$, which means $D - \{x\} = C - \{y\}$. So $w(D) - w(C) = w(x) - w(y)$
+
+By the guarantee of hereditary property , $\{y\} \in \mathcal{I}$. However, in the first round, $x$ is chosen, which means for any $z \in U$, if $\{z\} in \mathcal{I}$, $w(x)$ must be no less than $w(z)$. So, we may draw the conclusion that $w(x) \ge w(y)$. Consequently, $w(D) - w(C) = w(x) - w(y) \ge 0$. Since $C$ is a maximal, which means $w(D) \le w(C)$, we can find that $w(D) = w(C)$, which means $D$ is also a maximal.
+
+## (d)
+
+We may prove by induction that the algorithm can successfully find max-weight set in size $1,2,\cdots.$ during its process (Explanation: when the size of $S$ is $k$, $S$ is one of the maximals in size $k$).
+
+From now on, we abbreviate "a independent set in size $k$ with maximal weight" to "maximal in size $k$".
+
+When $n = 1$, it's trivial. (Based on the nature of algorithm; which is informally proved in last paragraph in (c))
+
+If this holds true for $n = k$, consider the case when $n = k + 1$.
+
+Suppose $C$ is a maximal in size $k + 1$. Let $A_k$ be the size-$k$-stage $S$ in the algorithm, and $A_{k+1}$ for size $k + 1$. Suppose that our smart algorithm chose element $x$ in this round.
+
+Since $|A_k| = k \lt k + 1 = |C|$, so there must exists $y \in |C|$ such that $A_k + \{y\} \in \mathcal{I}$. Consider $w(A_k + \{y\}) - w(C) = w(A_k) - w(C - \{y\})$. By induction hypothesis, $A_k$ is a maximal in size $k$, which means $w(A_k) \ge w(C - \{y\})$. So, $w(A_k + \{y\}) \ge w(C)$.
+
+Then consider $w(A_{k+1}) - w(A_k + \{y\}) = w(x) - w(y)$. First, if $w(y) \gt w(x)$, it must be listed before $x$ in the algorithm. Suppose $y$ is consider when $S = A_{l}$. Since $y \notin A_{l}$, we have $A_{l} + y \notin \mathcal{I}$ (otherwise, we will choose $y$ in that round). However, $A_{l} + \{y\} \subseteq A_{k} + \{y\} \in \mathcal{I}$, which means $A_{l} + y \in \mathcal{I}$. A contradiction! So $w(x) \ge w(y)$, which means $w(A_{k+1}) \ge w(A_k + \{y\})$.
+
+To sum up, we have $w(A_{k+1}) \ge w(A_k + \{y\}) \ge w(C)$, which means our algorithm finds the maximal in size $k + 1$.
+
+By induction, when our algorithm halts, it output a set $S$, which is a maximal in size $S$. However, we still needs prove it is maximal independent set. Luckily, our algorithm only halt when there can be no element to add to $S$. So if there exists $D \in \mathcal{I}$, where $S \subsetneq D$, then let $v \in D - S$. Using $2$ properties, $S + \{v\} \in \mathcal{I}$, which means $v$ can still be added to $S$. That contradicts the stopping criteria of our algorithm!
+
+So, our algorithm can only halt when it is maximal independent set, and using the conclusion of induction, it is also the max-weighted.
+
+## (e)
+
+We define the set $\mathcal{L} = \{~W \subseteq U ~|~ \text{vectors in} ~ W \text{are linear independent~}\}$.
+
+First, we will prove that $(U, \mathcal{L})$ is a matroid.
+
+- hereditary property: If $W \in \mathcal{L}$, then the vectors in $W$ are linear independent. If $V \subseteq W$, then the vectors in $V$ are linear independent too (of course). So $V \in \mathcal{L}$.
+- exchange property: If $V, W \in \mathcal{L}$ and $|V| \lt |W|$. This means $rank(V) = |V| \lt |W| = rank(W)$. If every vector in $W$ can be expressed as a linear combination of vectors in $V$, then $rank(W) \le rank(V)$, which contradicts $rank(V) \lt rank(W)$. So there must exist a vector $x$ in $W$ which cannot be expressed as a linear combination of vectors in $V$. So, $V + \{x\} \in \mathcal{L}$.
+
+Then, we are going to find the maximal of $\mathcal{L}$.
+
+We design the algorithm as below:
+
+- Let $S = \emptyset$.
+- For each $x \in U$ in descending order of weight.
+    + If $S + \{x\} \in \mathcal{L}$, then $S = S + \{x\}$.
+    + Otherwise, do nothing.
+    + If $|S| = n$, then halt.
+
+The correctness is guaranteed by (d).
+
+When judging whether $\{x\}$ can be added to $S$, we just need to check whether $x$ can be expressed as a linear combination of vectors in $S$. To make this faster, we may maintain an orthonormal basis $B$ of $S$ (just as Gram-Schmidt process). With the orthonormal basis, we can easily check in this way:
+
+- First, project $x$ to each vector $y_i$ in $B$ by dot product. It takes $\mathcal{O}(kn)$ time.
+- Then subtract the projection from $x$. It takes $\mathcal{O}(kn)$ time.
+- Finally, check the remaining vector $r$. If it is zero, then $x$ can be expressed as a linear combination of vectors in $S$.
+- Otherwise, add $\frac{r}{\|r\|}$ to $B$, add $x$ to $S$.
+
+Based on Gram-Schmidt process, we may claim that the process above must be correct. Since $k \le n$, the time complexity is $m \cdot O(n^2) = O(mn^2)$.
 
 # T4
 
@@ -205,7 +265,7 @@ Time distribution (Thinking + Writing):
 
 - T2: $5\text{min} + 5\text{min}$
 
-- T3:
+- T3: $20\text{min} + 80\text{min}$
 
 Difficulty: $5/5$.
 
