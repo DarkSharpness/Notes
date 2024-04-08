@@ -163,6 +163,40 @@ So we may let the potential function be $f(y) = C(y)$. The cost of an operation 
 
 # T3
 
+## (a)
+
+If the assertion is not true, we may assume that there exists two maximal independent sets $A$ and $B$ such that $|A| \lt |B|$. By exchange property, there exists $x \in B - A$ such that $A \cup \{x\} \in \mathcal{I}$. Then, there exists a set $C = A \cup \{x\}$ such that $A \subsetneq C$, which contradicts the assumption that $A$ is maximal.
+
+## (b)
+
+<!-- 
+Let G = (V, E) be a simple undirected graph. Let M = (E, S) where S = {F ⊆ E | F does not contain a cycle}. Prove that M is a matroid. What are the maximal sets of this matroid?
+ -->
+
+Let's prove that $M = (E, \mathcal{S})$ satisfies the 2 properties of matroid:
+
+First, if $A \in \mathcal{S}$, then for any $B \subset A$, since subgraph $A$ does not contains a cycle, the subgraph of subgraph $A$, $B$ should never contain a cycle either (I think this is too trivial. If $B$ contains a cycle with edges $\{e_1,\cdots,e_k\}$, then since $B \subset A$, $A$ should contains edges $\{e_1,\cdots,e_k\}$ too, which means $A$ contains a cycle, which contradicts the fact that $A \in \mathcal{S}$ a.k.a $A$ has no cycle).
+
+Second, if $|A| \lt |B|$, consider the connected blocks in $A$. We may divide $A$ into connected blocks $\{V_1, \cdots, V_n\}$. Since there's no cycle in graph $A$, based on some lemmas taught in Combinatorics last semester (a connected block $|V|$ should contain at least $|V| - 1$ edges ; an acyclic graph with vertices $V$ should contain at most $|V| - 1 edges; a connected block $|V| with exactly $|V| - 1$ edges is a tree), we may find that each block is a tree, so $|A| = (|V_1| - 1) + \cdots + (|V_n| - 1)$.
+
+Consider those blocks in $B$. In block $V_1$, since $B$ is acyclic, $B$ has at most $|V_1| - 1$ inter-block-$V_1$ edges. The same is the case with $V_2 \cdots, V_n$. So, in $B$, there are at most $(|V_1| - 1) + \cdots + (|V_n| - 1) = |A|$ inter-block edges (the block is based on $A$). However, $|B| \gt |A|$, so there must exists an intra-block edge $x$ for $B$. After adding this intra-block edge to $A$, we reduce the block number of $A$ by $1$, but we do not bring cycles since the edge is intra-block (between blocks). So, $A \cup \{x\} \in \mathcal{S}$.
+
+Based on the proof above, we can claim now that $\mathcal{S}$ is a matroid.
+
+Then we are going to explore all the maximals of $\mathcal{S}$. 
+
+Suppose $(V,E)$ is composed of connected, disjoint subgraphs $(V_1,E_1), \cdots, (V_n,E_n)$. Based on the lemma in Combinatorics (an acyclic graph with vertices $V$ should contain at most $|V| - 1$ edges), the size of maximal should not exceed $(|V_1| - 1) + \cdots + (|V_n| - 1)$.
+
+For each connected component, there must exist at least one spanning tree. Suppose there are $T_1, \cdots T_n$ for those subgraphs. Then, it's easy to observe that $T = T_1 + \cdots + T_n$ is a acyclic subgraph of $(V,E)$, so it is an element of $\mathcal{S}$. Also, $|T| = (|V_1| - 1) + \cdots + (|V_n| - 1)$, which is maximal available size. Due to (a), the maximal's size is unique, so we may claim that each maximal has size $(|V_1| - 1) + \cdots + (|V_n| - 1)$.
+
+Since, in each disjoint subgraph $(V_i, E_i)$, an element $M$ can contains at most $|V_i| - 1$ edges, so $|M| \le (|V_1| - 1) + \cdots + (|V_n| - 1)$. The equality holds when $M$ has exactly $|V_i| - 1$ edges in each disjoint subgraph $(V_i, E_i)$.
+
+So, these maximals are sets which is composed of exactly one spanning tree in each disjoint subgraph $(V_i, E_i)$.
+
+## (c)
+
+<!-- TODO -->
+
 # T4
 
 Time distribution (Thinking + Writing):
