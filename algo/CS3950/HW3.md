@@ -229,7 +229,7 @@ So, our algorithm can only halt when it is maximal independent set, and using th
 
 ## (e)
 
-We define the set $\mathcal{L} = \{\ W \subseteq U \ | \  \text{vectors in} \ W \text{are linear independent\ }\}$.
+We define the set $\mathcal{L} = \{~W \subseteq U ~|~ \text{vectors in} ~ W \text{are linear independent~}\}$.
 
 First, we will prove that $(U, \mathcal{L})$ is a matroid.
 
