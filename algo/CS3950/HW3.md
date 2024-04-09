@@ -229,11 +229,12 @@ So, our algorithm can only halt when it is maximal independent set, and using th
 
 ## (e)
 
-We define the set $\mathcal{L} = \{~W \subseteq U ~|~ \text{vectors in} ~ W \text{are linear independent~}\}$.
+We define the set $\mathcal{L} = \{ \ W \subseteq U \ | \text{ vectors in }W \text{ are linear independent }\}$
 
 First, we will prove that $(U, \mathcal{L})$ is a matroid.
 
-- hereditary property: If $W \in \mathcal{L}$, then the vectors in $W$ are linear independent. If $V \subseteq W$, then the vectors in $V$ are linear independent too (of course). So $V \in \mathcal{L}$.
+- hereditary property: If $W \in \mathcal{L}$, then the vectors in $W$ are linear independent. If $V \subseteq W$, then the vectors in $V$ are linear independent too (of course). So $V \in \mathcal{L}$
+
 - exchange property: If $V, W \in \mathcal{L}$ and $|V| \lt |W|$. This means $rank(V) = |V| \lt |W| = rank(W)$. If every vector in $W$ can be expressed as a linear combination of vectors in $V$, then $rank(W) \le rank(V)$, which contradicts $rank(V) \lt rank(W)$. So there must exist a vector $x$ in $W$ which cannot be expressed as a linear combination of vectors in $V$. So, $V + \{x\} \in \mathcal{L}$.
 
 Then, we are going to find the maximal of $\mathcal{L}$.
