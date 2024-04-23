@@ -141,13 +141,54 @@ So, the time complexity of maintaining the queue is still linearly. Consequently
 
 ## 2
 
+<!-- 
+Use a binary search tree as a dictionary. Each word assigned with a weight $w_i$. We want to minimum cost $\sum_{i=1}^{n} w_i \cdot d_i$, where $d_i$ is the depth of the word $w_i$ in the binary search tree.
+ -->
 
+We denote $f_{i,j}$ as the minimum cost of building a dictionary with words $w_i, w_{i+1}, \ldots, w_j$. We need to find out $f_{1,n}$.
 
+We may easily observe that, if the root of the optimal of $f_{i,j}$ is $x$, then those in $[i, x - 1]$ is in the left subtree and those in $[x + 1, j]$ is in the right subtree. And the cost equals to $\text{cost in left subtree} + \text{sum of weight in left subtree} + \text{cost in right subtree} + \text{sum of weight in right subtree} + w_x = \sum {w_i} + \text{cost in left subtree} + \text{cost in right subtree}$. Since its optimal, the $\text{cost in left subtree}$ and $\text{cost in right subtree}$ are also optimal. So we have $f_{i,j} = (\sum_{k=i}^{j} w_k) + f_{i,x-1} + f_{x+1,j}$. By enumeration between $i$ and $j$, we may find out the optimal $f_{i,j}$.
+
+The algorithm is as follows:
+
+- $f_{i,j} = 0$ for $i \gt j$
+- $f_{i,j} = x_i$ for $i = j$
+- $f_{i,j} = (\sum_{k=i}^{j} w_k) + \min_{x \in [i,j]} (f_{i,x-1} + f_{x+1,j})$ for $i \lt j$
+
+The correctness of the algorithm can be proved by induction on the size of $j - i$.
+
+When $i = j$, the cost is trivially $w_i$.
+
+When $i \lt j$, based on the observation before, the correctness based on the correctness of the subproblems. Due to the hypothesis, the subproblems are correct. So, the hypothesis holds for all $i,j$.
+
+So, the algorithm is correct.
+
+Still, this algorithm is not perfect enough, as we need to enumerate the size of $j - i$, and enumerate all the subranges, which requires $O(n) \times O(n ^ 2) = O(n ^ 3)$ time.
+
+First, we may use prefix sum $S_x = \sum_{i = 1}^{x} w_i$ to calculate $\sum_{k=i}^{j} w_k$ in $O(1)$ time by $S_j - S_{i - 1}$.
+
+To apply the quadrangle inequality, we may first tranform our definition. We define $g_{i,j} = f_{i,j - 1}$, and $s_{i,j} = S_{j - 1} - S_{i - 1}$.
+
+Now, we may calculate $g$ as follows: (we treat the second case above as a special case of the second case below)
+
+- $g_{i,j} = 0$ for $i \ge j$
+- $g_{i,j} = s_{i,j} + \min_{x \in [i,j)} (g_{i,x} + g_{x+1,j})$ for $i \lt j$
+
+What we need is $f_{1,n} = g_{1,n + 1}$.
+
+For all $i,j,i',j'$, we have $s_{i,j} + s_{i',j'} = S_{j - 1} - S_{i - 1} + S_{j' - 1} - S_{i' - 1} = S_{j - 1} + S_{j' - 1} - S_{i - 1} - S_{i' - 1} = s_{i,j'} + s_{i',j}$. This means that the triangle inequality holds for $s$.
+
+According to what is taught in class, we may apply the quadrangle inequality to optimize the calculation of $g$. This means the best position $x_{i,j}$ of $g_{i,j}$ is always in the range $[x_{i,j-1}, x_{i+1,j}]$. We may record those previous results, and enumerate by the order of $j - i$. In one iteration where $\Delta = j - i$ remains the same, the $x_{i,j}$ can only falls in the range $[x_{i,j-1}, x_{i+1,j}]$. The overall time of this iteration is $(x_{2,\Delta + 1} - x_{1,\Delta}) + \cdots + (x_{n - \Delta, n + 1} - x_{n - \Delta + 1, n}) = x_{n - \Delta, n + 1} - x_{1,\Delta} \lt n - 0 = n$. There are $O(n)$ iterations in all.
+
+To sum up, the overall time complexity is $O(n) \times n = O(n ^ 2)$.
+
+The correctness of quadrangle inequality is guaranteed in class.
 
 ## 5
 
 > It's too hard to prove some of those algorithms in detail. Sometimes it's hard to balance between simplicity and correctness.
 
-Time distribution (thinking about ideas + writing with detailing)
+Time distribution (thinking of ideas + writing with detailing):
 
-- T1: $1 \text{min}$ + $60\text{min} = 61\text{min}$
+- T1: $1 \text{min} + 59\text{min} = 60\text{min}$
+- T2: $10 \text{min} + 40\text{min} = 50\text{min}$ 
