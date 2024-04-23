@@ -1,0 +1,153 @@
+# HW4
+
+## 1
+
+### a
+
+Let $f_i$ be the maximum consecutive sum of the subarray ending at $i$ (the subarray must contains the $i$-th element).
+
+There are 3 cases:
+
+- $f_{1} = a_{1}$
+- $f_{i-1} \ge 0$: $f_i = f_{i-1} + a_{i}$
+- $f_{i-1} \le 0$: $f_{i} = a_{i}$. (When equal $0$, it is the same as the second case.)
+
+It's trivial to see that the answer we want is the maximum of $f_i$ for $i = 1, 2, \ldots, n$.
+
+#### Correctness of $f_i$
+
+We will prove by induction that our algorithm will correctly calculate all $f_i$.
+
+Base case: $f_1 = a_1$ is trivial.
+
+If the hypothesis holds for $n = k - 1$, then for $n = k$. Suppose the maximum consecutive sum of the subarray ending at $k$ starts from $j$, which is $a_{j}, a_{j+1}, \ldots, a_{k}$. Suppose the maximum consecutive sum of the subarray ending at $k-1$ starts from $i$, which is $a_{i}, a_{i+1}, \ldots, a_{k-1}$.
+
+- $j = k$: then it must hold that $f_{k - 1} \le 0$. Otherwise, the consecutive sum from $i$ to $k$ is $a_{i} + a_{i+1} + \ldots + a_{k - 1} + a_{k} = f_{k - 1} + a_{k} > f_{k}$. This contradicts the assumption that $f_{k}$ is the maximum consecutive sum of the subarray ending at $k$, where $i$ is a better substitute for $j$.
+- $j \lt k$. Then if $j \ne i$, consider the subarray $a_{i}, a_{i+1}, \cdots a_{k}$. The sum of this subarray is $f_{k - 1} + a_{k}$. Compare $LHS = f_{k - 1} + a_{k}$ with $RHS = f_{k}$.
+    1. If $LHS \lt RHS$, then $a_j + a_{j+1} + \cdots + a_{k + 1} = f_k - a_k \gt f_{k - 1}$. This contradicts the assumption that $f_{k - 1}$ is the maximum consecutive sum of the subarray ending at $k - 1$. So $LHS \ge RHS$.
+    2. If $LHS \gt RHS$, similarly, this contradicts the assumption that $f_k$ is the maximum consecutive sum of the subarray ending at $k$.
+    3. $LHS = RHS$, which means $f_{k} = f_{k - 1} + a_{k}$. Then consider what our algorithm will output. If $f_{k - 1} \lt 0$, then trivially, $a_k$ alone is a better subarray ($j' = k$), which contradicts that $j \lt k$. So, in this case, our algorithm will goto the second case. The answer $f_{k} = f_{k - 1} + a_{k}$ is correct.
+
+#### Our algorithm is correct
+
+Then, we are going to prove that our algorithm will correctly calculate all $f_i$.
+
+- If $j = k$, then $f_{k - 1} \le 0$ and $f_{k} = a_{k}$. In our algorithm, this is the third case.
+- If $j \lt k$, then $f_{k} = f_{k - 1} + a_{k}$ and $f_{k - 1} \ge 0$. In our algorithm, this is the second case.
+
+Consequently, by induction, the hypothesis holds for all $n$. Our algorithm will correctly calculate all $f_i$.
+
+> Sorry that I forgot to find the subsequences. But I think that is not the core of this problem. Therefore, I'd just give a brief explanation here.
+
+If we want to find the subsequences, we just need to record the first index of the maximum $f_i$.
+
+In those 3 cases:
+
+- first index of $1$ is $1$.
+- if $f_{i-1} \ge 0$, then first index is $f_{i-1}$'s first index.
+- if $f_{i-1} \le 0$, then first index is $i$.
+
+The correctness is similar to induction above, and I will not repeat it here.
+
+#### Time complexity
+
+The time complexity of this algorithm is $O(n)$, since we just enumerate all $i$ from $1$ to $n$, and perform $O(1)$ operations in each iteration.
+
+### b
+
+We may denote a subarray satisfying the requirement as a good subarray. And we define maximum sum is the maximum sum of a good subarray.
+
+We can use $f_{j}$ to represent the maximum sum of good array which ends at $j$. ($a_j$ must be included in the good array.)
+
+It's trivial that the maximum $(L-R)-\text{step}$ subsequence, must end at some $z$, so the maximum subsequence must be exactly the good array ending at $z$, with the maximum sum as $f_z$, we may simply find out which one is the best by comparing all $f_i$, and the maximum one is the answer.
+
+We will find $f_i$ as below:
+
+- $f_i = a_i$ for $i = 1, 2, \ldots, L$
+- $f_i = \max(0, \max(f_{j})) + a_i, \max(i - R,1) \le j \le i - L$
+
+We will next prove that $f_i$ is correct. We may prove by induction.
+
+Base case: for those $i \le L$, $f_i = a_i$ is trivially correct.
+
+If the hypothesis holds for $n = k - 1$ and $k \gt L$. Then for $n = k$. We just need to consider the length of the maximum good subarray ending at $k$.
+
+- The length is $1$, which means $f_k = a_k$. Then, for all $j \in [k - L, k - R]$, if $f_j \ge 0$, then we may make up the new good subarray ending at $k$ by adding $a_k$ to the good subarray ending at $j$. The sum of this new good subarray is $f_j + a_k \gt a_k = f_k$, which contradicts the assumption that $f_k$ is the maximum sum of good subarray ending at $k$. So, $f_k = a_k$ is correct. In this case, $\max(f_j) \lt 0$, so our algorithm will output $0 + a_i = a_i$ which is correct.
+- The length is $l \gt 1$. Then, consider the second last element in the maximum good subarray $a_j$, due to the nature of $(L-R)-\text{step}$, we must have $j \in [k - L, k - R]$. If sum of the sequence with-out $a_k$ is less than $f_j$, then we may add $a_k$ to the sequence to get a better good subarray. This contradicts the assumption that $f_j$ is the maximum sum of good subarray ending at $j$. So, $f_k = f_j + a_k$ is correct. Since $j \in [k - L, k - R]$, we may find the maximum $f_j$ by enumerating all $j$ in $[k - L, k - R]$. So, $f_k$ is correct, and in this case, our algorithm will output $\max(f_j) + a_k = f_k$ which is correct.
+
+By induction, the hypothesis holds for all $n$. Our algorithm will correctly calculate all $f_i$.
+
+#### Time complexity
+
+The time complexity of this algorithm is $O(n^2)$, since we just enumerate all $i$ from $1$ to $n$, and in each iteration, we need to find the maximum of $f_j$ in $[i - L, i - R]$, which involves at most $n$ elements.
+
+### c
+
+We are going to optimize the algorithm in b.
+
+#### Lemma
+
+First we may make an observation that for those in $[i - R, i - L]$, suppose $j,k \in [i - R, i - L]$ and $j \lt k$, if $f_j \le f_k$, then we may safely ignore $j$ during the enumeration, since for any $l \gt i$, if $f_l$ is calculated from $f_j$, then $f_k$ is always a no-worse choice (because $j,k \in [i - R, i - L]$ and $j \lt k$, $i \lt l$ and $j \in [l - R, l - L]$ means that $k \in [l - R, l - L]$, $k$ is also valid, while $f_k \ge f_j$). So, we may safely ignore $j$.
+
+So we want to maintain a double-ended queue $Q$ to store some of the elements in $[i - R, i - L]$ in ascending order of index. Specially, $a_j \in Q$, iff $\forall k \in [j + 1, i - L], f_j \gt f_k$.
+
+We may easily find that the $Q$ has the following properties:
+
+1. It must contain at least one element $f_{i - L}$.
+2. For some $a_j$ outside the queue, there must exists some $k$ where $j \lt k$ and $f_j \le f_k$.
+3. The array is in descending value of $f$. (If non-descending, we may remove the first element.)
+
+Due to property $2$, the maximum $f$ in $[i - R, i - L]$ is always in the queue. Due to property $1$ and $3$, the maximum element is always the first element in the queue, and it must exists in the queue.
+
+So, if we can maintian the queue correctly, we may find the maximum $f$ in $[i - R, i - L]$ in $O(1)$ time (first element in the queue). Then, we can use the algorithm in (b) to calculate all $f_i$ in $O(n)$ time. The overall time is $O(n) + O(\text{maintain the queue})$.
+
+#### Maintain the queue
+
+We propose the following algorithm to maintain the queue.
+
+- When $i \le L$, the queue is useless(we don't need to calculate $f_i$), so we just ignore it.
+- When $i \ge L$, we perform these operations to maintian the queue:
+    1. If the first element in the queue is out of the range $[i - R, i - L]$, then pop the first element in the queue.
+    2. Compare the newly added $f_{i - L}$ with the last element in the queue. If $f_{i - L} \ge f_{\text{last element}}$, then pop the last element in the queue. If $f_{i - L} \lt f_{\text{last element}}$, or the queue is empty, then add $f_{i - L}$ to back
+     the queue.
+
+We claim that we have maintained the queue correctly.
+
+This can be proved by induction.
+
+For $i \le L$, the queue is useless, so we don't need to prove it.
+
+For $i = L + 1$, we have only one element in the queue, which is $f_{L}$. The queue is correct.
+
+If the hypothesis holds for $n = k - 1$ and $k \gt L$. Then for $n = k$. We just need to consider the newly added $f_{k - L}$, since for any $f_j \in Q$, $\forall l \in [j + 1, k - 1 - L], f_j \gt f_l$ by induction hypothesis. Since the queue is in ascending order of index, and descending order of $f$, we may pop the element from the back. After each pop operation, the queue is still in ascending order of index, and descending order of $f$. And if $f_{k - L} \lt f_{\text{last element}}$ at some time, any $f_j \in Q$ will be larger than $f_{k - L}$. Finally, we just need to add $f_{k - L}$ to the back of the queue. If the queue goes empty, the case is similar. The process above is just what we have proposed in the algorithm.
+
+We have proved that all those in queue when $n = k - 1$ have been correctly maintained. Still, we need to prove that those out of queue when $n = k - 1$ will never be in the queue when $n = k$. If $f_j$ is out of the queue when $n = k - 1$, then there must exists some $k$ where $j \lt k$ and $f_j \le f_k$. This still holds in $n = k$. So, they will not go into the queue, and our algorithm is doing right.
+
+Specially, we may easily observe that only the first element may newly go out of the range $[i - R, i - L]$, so we give it a check to see if the first element is out of the range.
+
+So by induction, our algorithm is correct for all $n$.
+
+#### Time complexity
+
+We just need to prove that the time complexity of maintaining the queue is $O(n)$.
+
+Consider the operations in the queue:
+
+- The overall checking of the first element will be perform at most $n$ times.
+- In each iteration, at most one element will be added to the queue. Each element can be only be pushed and poped at most once. At most $n$ elements will be pushed and poped. So, the overall time complexity of push and pop is $O(n)$.
+- The count of comparation in each iteration $c_{\text{comp}}$ is at most $c_\text{pop} + 1$. So the overall comparation is $O(n) + O(\text{pop}) = O(n)$.
+
+So, the time complexity of maintaining the queue is still linearly. Consequently, our algorithm can run in $O(n) + O(\text{maintain the queue}) = O(n)$ time.
+
+## 2
+
+
+
+
+## 5
+
+> It's too hard to prove some of those algorithms in detail. Sometimes it's hard to balance between simplicity and correctness.
+
+Time distribution (thinking about ideas + writing with detailing)
+
+- T1: $1 \text{min}$ + $60\text{min} = 61\text{min}$
