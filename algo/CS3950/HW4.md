@@ -184,6 +184,46 @@ To sum up, the overall time complexity is $O(n) \times n = O(n ^ 2)$.
 
 The correctness of quadrangle inequality is guaranteed in class.
 
+## 3
+
+Let $C$ be the color scheme of all the vertices ($\text{vertex} \mapsto \text{color}$) with no more than $c$ colors. We claim a coloring $C$ is valid in $V$ iff $\forall u,v \in V, (u,v) \in E \Rightarrow C(u) \ne C(v)$.
+
+Let $f_{C,u}$ be whether there exists a coloring $C'$ satisfing that $C'(x) = C(x), \forall x \in B(u)$ and $C'$ valid in $B(T(u))$.
+
+We may easily observe the fact that although there are many coloring for the whole vertex set $V$, yet in $f_{C,u}$, only the coloring of $B(u)$ in $C$ is important. So when we enumerate $C$ for $f_{C,u}$, we just need to enumerate all coloring $C$ in $B(a)$. There exist at most $c^{k + 1}$ such schemes, where $k$ is the number of tree-width.
+
+### Base case (Leaves)
+
+- $f_{C,u} = 1$ enumerate all coloring in $B(T(u)) = B(u)$ to find if there's a satisfying coloring.
+- $f_{C,u} = 0$ otherwise.
+
+### Recursion
+
+For simplicity, we introduce those arithmetics for $f$ values:
+
+- $f_1 \cup f_2$: logical or, $0$ iff $f_1 = 0$ and $f_2 = 0$, $1$ otherwise.
+- $f_1 \cap f_2$: logical and, $1$ iff $f_1 = 1$ and $f_2 = 1$, $0$ otherwise.
+
+For a non-leaf vertex $u$ and $C$, we first check if $C$ is valid in $B(u)$. If not, then of course $f_{C,u} = 0$. Then, we may enumerate all children $a$ of $u$. For each child $a$, we enumerate all coloring $C''$ in $B(a)$, checking the constraint that $C''(x) = C(x), \forall x \in B(a) \cap B(u)$ and $f_{C'',a} = 1$. If there's no such $C'$, we denote $g_{C,u,a} = 0$, otherwise $g_{C,u,a} = 1$.
+
+Then, we claim: $$f_{C,u} = \bigcap_{a \in \text{children}(u)} g_{C,u,a}$$
+
+### Last step
+
+In the end, we just enumerate all $C$ in $B(root)$. If some $f_{C,root} = 1$, we output $1$, otherwise $0$.
+
+### Correctness
+
+- Base case is trivial.
+- For recursion part, an arbitary $f(C,u)$, if $C'$ is valid in $B(T(u))$, then $C'$ must be separately valid in all $B(T(a)), a \in \text{children}(u)$, and of course, in $B(u)$. Note that due to the nature of tree decomposition, for any $a,b \in \text{children}(u), a \ne b$, $(B(T(a)) - B(u)) \cap (B(T(b)) - B(u)) = \emptyset$, and there's no edges between bags. So, those child tree coloring will not interfere with each other (this happen only if there's bridge across bags, or share common vertices, which has been impossible). The only possible interference is that the common part of the child tree and the parent: those shared vertices and edges. Since the edges are within the bags, those shared edges must appear in $B(u)$, so we check first whether $C$ is valid in $B(u)$. Also, those shared vertices must be colored the same in child tree plans and the parent tree plan. So, we just need to check whether $C''$ is valid in $B(a)$, where $C''(x) = C(x), \forall x \in B(a) \cap B(u)$. In addition, there should be at least a plan which is valid for each child tree, so we introduce $g$, which is $1$ if there's a valid plan for the child tree. Finally, we must consider all the child trees. Only when each child tree has a valid plan, and the valid plan do not conflict of current $C$, we may have a valid plan for the whole tree. That's why we cap all $g_{C,u,a}$.
+- In the end, we just enumerate all $C$ in $B(root)$. If some of them are valid, that means there's a valid plan for the whole tree, so we output $1$, otherwise $0$.
+
+### Timing
+
+For each vertice, we will enumerate all children, which is at most $n$. Also, we enumerate all coloring in $B(u)$ and $B(a)$, each of which is at most $c^{k + 1}$. We enumerate all vertices, which is at most $n$. Checking for conflict requires at most $|B(u)| \times |B(a)| = O(k^2)$ time.
+
+So, the overall time complexity is $O(c^{2(k + 1)} \times k^2 \times n^2)$. Pretty good.
+
 ## 5
 
 > It's too hard to prove some of those algorithms in detail. Sometimes it's hard to balance between simplicity and correctness.
@@ -191,4 +231,4 @@ The correctness of quadrangle inequality is guaranteed in class.
 Time distribution (thinking of ideas + writing with detailing):
 
 - T1: $1 \text{min} + 59\text{min} = 60\text{min}$
-- T2: $10 \text{min} + 40\text{min} = 50\text{min}$ 
+- T2: $10 \text{min} + 40\text{min} = 50\text{min}$
