@@ -215,7 +215,7 @@ In the end, we just enumerate all $C$ in $B(root)$. If some $f_{C,root} = 1$, we
 ### Correctness
 
 - Base case is trivial.
-- For recursion part, an arbitary $f(C,u)$, if $C'$ is valid in $B(T(u))$, then $C'$ must be separately valid in all $B(T(a)), a \in \text{children}(u)$, and of course, in $B(u)$. Note that due to the nature of tree decomposition, for any $a,b \in \text{children}(u), a \ne b$, $(B(T(a)) - B(u)) \cap (B(T(b)) - B(u)) = \emptyset$, and there's no edges between bags. So, those child tree coloring will not interfere with each other (this happen only if there's bridge across bags, or share common vertices, which has been impossible). The only possible interference is that the common part of the child tree and the parent: those shared vertices and edges. Since the edges are within the bags, those shared edges must appear in $B(u)$, so we check first whether $C$ is valid in $B(u)$. Also, those shared vertices must be colored the same in child tree plans and the parent tree plan. So, we just need to check whether $C''$ is valid in $B(a)$, where $C''(x) = C(x), \forall x \in B(a) \cap B(u)$. In addition, there should be at least a plan which is valid for each child tree, so we introduce $g$, which is $1$ if there's a valid plan for the child tree. Finally, we must consider all the child trees. Only when each child tree has a valid plan, and the valid plan do not conflict of current $C$, we may have a valid plan for the whole tree. That's why we cap all $g_{C,u,a}$.
+- For recursion part, an arbitrary $f(C,u)$, if $C'$ is valid in $B(T(u))$, then $C'$ must be separately valid in all $B(T(a)), a \in \text{children}(u)$, and of course, in $B(u)$. Note that due to the nature of tree decomposition, for any $a,b \in \text{children}(u), a \ne b$, $(B(T(a)) - B(u)) \cap (B(T(b)) - B(u)) = \emptyset$, and there's no edges between bags. So, those child tree coloring will not interfere with each other (this happen only if there's bridge across bags, or share common vertices, which has been impossible). The only possible interference is that the common part of the child tree and the parent: those shared vertices and edges. Since the edges are within the bags, those shared edges must appear in $B(u)$, so we check first whether $C$ is valid in $B(u)$. Also, those shared vertices must be colored the same in child tree plans and the parent tree plan. So, we just need to check whether $C''$ is valid in $B(a)$, where $C''(x) = C(x), \forall x \in B(a) \cap B(u)$. In addition, there should be at least a plan which is valid for each child tree, so we introduce $g$, which is $1$ if there's a valid plan for the child tree. Finally, we must consider all the child trees. Only when each child tree has a valid plan, and the valid plan do not conflict of current $C$, we may have a valid plan for the whole tree. That's why we cap all $g_{C,u,a}$.
 - In the end, we just enumerate all $C$ in $B(root)$. If some of them are valid, that means there's a valid plan for the whole tree, so we output $1$, otherwise $0$.
 
 ### Timing
@@ -224,11 +224,163 @@ For each vertice, we will enumerate all children, which is at most $n$. Also, we
 
 So, the overall time complexity is $O(c^{2(k + 1)} \times k^2 \times n^2)$. Pretty good.
 
+## 4
+
+### a
+
+First of all, it's clear that $d^{(r)}(i,j) \ge \max \{ d^{(s)}(i,k), d^{(t)}(k,j)\}$. Because for the maximum $k$, we may simply join the longest path from $i$ to $k$ and $k$ to $j$, the new route using $s + t = r$ edges. Since $d^{(r)}(i,j)$ is the maximum, LHS must be no less than RHS.
+
+Then consider the path of the maximum of $d^{(r)}(i,j)$: $i = x_0 \to x_1 \to x_2 \to \dots x_{r-1} \to x_r = j$. Consider $x_{s} = v_a$. If $a \lt i$, then there must exist at least one edge $v_m = x_l \to x_{l+1} = v_n$ where $m \gt n$, which indicates $d(x_l, x_{l+1}) = -\infty$. So, $d^{(r)}(i,j) = -\infty \le \max \{ d^{(s)}(i,k), d^{(t)}(k,j)\}$.
+
+The case is similar when $a \gt j$. In both cases, we have $d^{(r)}(i,j) = -\infty \le \max \{ d^{(s)}(i,k), d^{(t)}(k,j)\}$.
+
+If $a \in [i,j]$, we may divide the path into $2$ parts:
+
+- $i = x_0 \to x_1 \to \dots \to x_{s-1} \to x_s = v_a$, which should be no greater than $d^{(s)}(i,a)$ due to the definition of $d^{(s)}(i,a)$.
+- $v_a = x_s \to x_{s+1} \to \dots \to x_{r-1} \to x_r = j$, which should be no greater than $d^{(r - s = t)}(a,j)$ for the same reason.
+
+In this case $\max \{ d^{(s)}(i,k), d^{(t)}(k,j)\} \ge d^{(s)(i,a)} + d^{(t)}(a,j) \ge d^{(r)}(i,j)$.
+
+So, we may draw the conclusion that LHS is no greater than RHS, and LHS is no less than RHS. This means that $d^{(r)}(i,j) = \max \{ d^{(s)}(i,k), d^{(t)}(k,j)\}$.
+
+### b
+
+Due to what is learnt in Combinatorics last semester, for a convex polygen, any $4$ points can make up a new convex $4$-gon.
+
+So, we just need to proves that for an convex $ABCD$:
+
+$$
+AC + BD \ge AB + CD
+$$
+
+![Demo](image/HW4/img1.png)
+
+Since $ABCD$ is convex, we may suppose that $AC$ and $BD$ join at $E$ inside the polygon. Then, we may have:
+
+$$AC + BD = AE + EC + BE + ED = (AE + BE) + (CE + ED) \ge AB + CD$$
+
+> The last step is due to the triangle inequality.
+
+### c
+
+We may prove by induction.
+
+For $r = 1$, it's the case since $d^{(1)}(i,j) = d(i,j)$.
+
+If it holds for $r - 1$, then for $r$, we denote $d^{(r-1)}(i,j) = g(i,j)$, which satisfies inverse quadrangle inequality. Then, we have:
+
+$$
+s \in [i',j], t \in [i,j'], \text{RHS} = \max \{d(i',s) + g(s,j) + d(i,t) + g(t,j)\}
+$$
+
+Without a loss of generality, we may suppose that $s \le t$. Then, we may have:
+
+$$
+\begin{aligned}
+d(i',s) + g(s,j) + d(i,t) + g(t,j)
+&   = d(i', s) + d(i, t) + g(s, j) + g(t, j') \\
+& \le d(i', t) + d(i, s) + g(s, j') + g(t, j) \\
+&   = d(i', t) + g(t, j') + d(i, s) + g(s, j) \\
+& \le d^{(r)}(i', j') + d^{(r)}(i, j) \\
+\end{aligned}
+$$
+
+The first less equal is due to the inverse quadrangle inequality of $d$ and $g$ (induction hypothesis). The second less equal is due to the definition of $d^{(r)}$ (maximum).
+
+Consequently, we may draw that maximum of $d(i',s) + g(s,j) + d(i,t) + g(t,j)$ (which is RHS) is no greater than $d^{(r)}(i', j') + d^{(r)}(i, j)$ (which is LHS).
+
+Then, we may prove that LHS is no less than RHS.
+
+### d
+
+> Hack: If the $s,t$ is variable, just consider $k = j, s = r, t = 0$ , a dummy solution... So $j \le j + 1 \le j + 1$.
+
+We denote $d^{(s)}(i,j)$ as $f(i,j)$, and $d^{(t)}(i,j)$ as $g(i,j)$.
+
+If the hypothesis doesn't hold for $i,j$. Let $K(i,j) = a \gt b = K(i,j+1)$.
+
+By definition of $K$, we have:
+
+$$
+f(i, b) + g(b, j + 1) \gt f(i, a) + g(a, j + 1) \\
+i \le b \lt a \le j
+$$
+
+Since $f$ and $g$ satisfy the inverse quadrangle inequality, we have:
+
+$$
+\begin{aligned}
+& g(b, j) + g(a, j + 1) \ge g(b, j + 1) + g(a, j) \\
+\Leftrightarrow ~\
+& g(b, j) - g(b, j + 1) \ge g(a, j) - g(a, j + 1) \\
+\end{aligned}
+$$
+
+Consequently, we have:
+
+$$
+\begin{aligned}
+f(i,b) + g(b, j + 1) + (g(b, j) - g(b, j + 1))
+& \gt f(i, a) + g(a, j + 1) + (g(a, j) - g(a, j + 1)) \\
+\Leftrightarrow ~\
+f(i,b) + g(b, j)
+& \gt f(i, a) + g(a, j) \\
+\end{aligned}
+$$
+
+This contradicts the assumption that $a = K(i,j)$ (which indicates $f(i,b) + g(b, j) \le f(i, a) + g(a, j)$).
+
+So, we may draw from contradiction that $b \ge a$, which means $K(i, j + 1) \ge K(i, j)$. Similarly, $K(i, j + 1) \le K(i + 1, j + 1)$. That is:
+
+$$
+K(i, j) \le K(i, j + 1) \le K(i + 1, j)
+$$
+
+### e
+
+This quesition is fairly easy.
+
+#### Part 1
+
+First, if we have $d^{(s)}(i,j)$ and $d^{(t)}(i,j)$ pre-calculated, then we claim that we can solve $d^{(r)}(i,j)$ in $O(n^2)$ time, where $r = s + t$
+
+In (a), we have proved that $d^{r}(i,j)$ can be calculated by enumerate all $k$ in $[i,j]$ and find the max of $d^{(s)}(i,k) + d^{(t)}(k,j)$. This $k$ is what is defined as $K(i,j)$ in (d). Based on the fact that $K(i,j) \le K(i, j + 1) \le K(i + 1, j + 1)$, we may optimize the process just as the Quadrangle Inequality proved in class.
+
+We enumerate the length of the interval $len = j - i + 1$ from $1$ to $n$. In each iteration, we enumerate all $i,j$ satisfing $1 \le i,j \le n, i + len - 1 = j$. When calculating, we keep track of where the maximum is reached (which is $K(i,j)$). For a specific $i,j$, we just need to enumerate to find the maximum in the range $K(i, j - 1)$ to $K(i + 1, j)$. Note that we enumerate by $len$ first, and in $K(i, j - 1), K(i + 1,j)$, the length is $j - 1 - i + 1 = j - i = len - i$, which means these $K$ have been calculated in the previous iteration. In the end, we may find all $d^{(r)}(i,j)$.
+
+Its correctness is guaranteed by the proof in (a) and (d).
+
+In each iteration, we enumerate $K(1, len) \to K(2,len + 1) \to \dots \to K(n - len + 1, n)$. The overall traversal time in one iteration is at most $K(n - len + 1,n) - K(1,len) \le n - 0$. There are at most $n$ iterations. So, the overall time complexity is $O(n^2)$.
+
+#### Part 2
+
+We have proved that if $d^{(s)}(i,j)$ and $d^{(t)}(i,j)$ are pre-calculated, then we may solve $d^{(r)}(i,j)$ in $O(n^2)$ time. At the beginning we may easily calculate $d^{(1)}(i,j) = d(i,j)$ by using brute force, enumerating each pair of vertices, which is $O(n^2)$ time.
+
+Then, we can have a trick below: we split the number $r$ to its binary representation in at most $log^(r)$ bits:
+
+$$
+r = \sum_{i=0}^{log(r)} 2^i \cdot b_i, b_i \in \{0, 1\}
+$$
+
+First of all, since $2^{i} = 2^{i-1} + 2^{i-1}$, we can calculate out all these $d^{(2^i)}$ using the result of $d^{(2^{i-1})}$ and $d^{(1)}$.
+
+> Remark: This should be proved by induction, but I think this is too trivial...
+
+Then, we may maintain a number $p$, and enumerate these bits. If $b_i = 1$, then we calculate $d^{(p)}$ using $d^{(p - 2^i)}$ and $d^{(2^i)}$ and set $p = p + 2^i$.
+
+In the end, we have $p = r$ and $d^{(r)}$ is calculated. This involves at most $\log(r) + 1$ iteration in finding the $d^{(2^i)}$ and at most $\log(r)$ iteration in maintaining $p$ calculating $d^{(p)}$. So, there are in all no than $O(\log r)$ iterations, each of which run in $O(n^2)$ time. Consequently, the overall time complexity is $O(n^2 \log r)$.
+
+> Remark: This should be proved by induction too, but still trivial.
+
 ## 5
 
-> It's too hard to prove some of those algorithms in detail. Sometimes it's hard to balance between simplicity and correctness.
+> Me: It's too hard to prove some of those algorithms in detail. Sometimes it's hard to balance between simplicity and correctness.
 
 Time distribution (thinking of ideas + writing with detailing):
 
 - T1: $1 \text{min} + 59\text{min} = 60\text{min}$
 - T2: $10 \text{min} + 40\text{min} = 50\text{min}$
+- T3: $30 \text{min} + 50\text{min} = 80\text{min}$
+- T4: $30 \text{min} + 90\text{min} = 120\text{min}$
+
+Difficulty: $4 / 5$
