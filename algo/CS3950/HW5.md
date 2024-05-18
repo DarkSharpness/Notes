@@ -1,28 +1,19 @@
 # HW5
 
+$$
+\newcommand{\from}{\leftarrow}
+\newcommand{\O}{\mathcal{O}}
+$$
+
 ## T1
 
-This problem is easy. We keep track of the overall money the someone owes others as $\text{sum}$. It's clear that
+This problem is easy. If there exists a cycle (we do not care the direction of the edge on the cycle), in the network, assume it is $X_1X_2\cdots X_t=X_1$. The direction of the edge in the cycle is arbitrary (e.g. either $X_1 \to X_2$ or $X_2 \to X_1$ is ok). Since the length of the cycle is at least $3$, we may find a direction (either $X_1X_2\cdots X_t=X_1$ or $X_1=X_t\cdots X_2X_1$ direction) that there is at least one edge in the cycle that follows this direction. We take out all the edges following such direction, and take the minimum capacity of them all, denoted as $w$. Then for all the edges on the cycle, if its direction is the same as chosen direction, we decrease the capacity by $w$. Otherwise, we increase the capacity by $w$. This operation equals to the fact that everyone in the cycle given the next one with $w$ and receive $w$ from the previous one.
 
-$$\text{sum}(u) = \sum_{(u,v)\in E} w(u,v) -  \sum_{(v,u)\in E} w(v,u)$$
+(For example, consider $X_1 \to_4 X_2 \from_2 X_3 \to_1 X_1$. We may chose the direction $X_1X_2X_3X_1$, then the $w$ is $1$, so we will transform the graph into $X_1 \to_3 X_2 \from_3 X_3$ , which is equivalent. )
 
-It's trivial that $\sum \text{sum(u)} = 0$, and $\text{sum}$ is the money that someone should pay others/get from others. 
+After this operation, we transform the network into an equivalent, which will eliminate at least one edge's capacity in the cycle. Note that all these operations will not introduce new edges (which will not violate the principle), and will eliminate any undirected cycle in the cycle.
 
-So, we may arrange a new debt network to transfer the money:
-
-- Initial $\text{rest}(u) = \text{sum}(u)$
-- In each time, we choose $u,v$ where $\text{rest}(u)\lt 0$ and $\text{rest}(v)>0$. we just add one new edge $(u,v)$ where the money is $w = \min (\text{rest}(v),-\text{rest}(u))$, so we have $\text{rest}(u) = \text{rest}(u) + w$ and $\text{rest}(v) = \text{rest}(v) - w$
-- End when $\forall u, \text{rest}(u)=0$ 
-
-The iteration will be run at most $n - 1$ times. First of all, we may prove by induction that $\sum \text{rest}(u) = 0$ before and after each iteration.  This can be simply proved by induction.
-
-Then if $\exist u, \text{rest}(u) \ne 0$, then there must exist satisfying $u,v$ . This is guaranteed by $\sum \text{rest}(u) = 0$​.
-
-Also, after each iteration, since the weight is $(\text{rest}(v),-\text{rest}(u))$, at least one in $\text{rest}(u),\text{rest}(v)$ should be zero, and we still have the fact that $\text{rest}(u) \le 0, \text{rest}(v) \ge 0$ .
-
-Based on these facts, after one iteration, exactly one edge is added and one or two $\text{rest}$ should be updated to zero. Since there is at most $n$ non-zero $\text{rest}$, which is eliminated to $0$ after the program , there is at most $n$ iteration. Moreover, consider the last iteration, if just one $\text{rest}$ is updated to zero, then before the last iteration, there exists only one non-zero $\text{rest}$. However, we have $\sum\text{rest}(u) = 0$. This is impossible. So in the last iteration, two $\text{rest}$ are updates to zero. So, there is at most $n - 1$ iterations.
-
-That means that in our new debt network, we add at most $n - 1$ edges. And, the new network still satisfy the fact that $\text{sum}'(u) = \text{sum}(u)$. This means our network settle all the payment, containing no more than $n - 1$ p2p payment.
+So, given the initial graph, we may eliminate all the undirected cycles from the graph. Since there's at most $|V|^2$ edges in the graph, each time we will eliminate at least $1$ edge from $1$ cycle, in the end this graph will become an acyclic (in the sense of undirected graph), which means there's at most $n - 1$ edges.
 
 ## T2
 
@@ -54,7 +45,33 @@ So, the correctness is guaranteed. Proof similar to 2.a. (keen observation: each
 
 As proved in class, $\text{Dinic}$ in this case has worst time complexity $\mathcal{O}(EV^2)$ where $E \le n + 2k + 2nk$ and $V \le 2n + 2k + 2$. So, the time complexity is $\mathcal{O}((n + k)^2nk)$
 
+However, using the conclusion in T3, we may have $\mathcal{O}(EV^{\frac 2 3}) = \mathcal{O}(nk(n + k)^{\frac 2 3})$ or $\O(E^{\frac 3 2}) = \O(n^{1.5}k^{1.5})$ 
 
+## T3
 
+### 3.a
 
+We divide the proof into $2$ parts, just as the proof of $\text{Dinic}$ .First, we prove that finding a block requires $\mathcal{O}(E)$ times. Then, we prove that there is at most $\mathcal{O}(\sqrt{E})$ round. 
+
+First of all, consider the process of finding a block. Each time we find a valid flow, since the weight of the edge is exactly $1$, we will remove all the edges along the path. If in $\text{dfs}$ we fail to find a valid edge, we may delete all the edge on the path. Whatever the case, each edge in the graph will be visited at most once, so finding a block requires just at most $\O(E)$ time.
+
+The property of the weight of the edge is exactly $1$ can be guaranteed by the fact that all the capacity is initialized to $1$, and when we find a flow, since all the edge on it has capacity $1$, when we reverse it before the next round, the capacity of newly added edge in the next round is still $1$. So, the capacity of any edge is $1$ at any iteration.
+
+Then, we will prove that there is at most $\O(\sqrt{E})$ round.
+
+In class, we have proved that $\text{dist}(s,t) \ge \sqrt{E}$ in $G^\mathcal{F}$ after $\sqrt{E}$ rounds in $\text{Dinic}$. In this case, there should be at least $\sqrt{E}$ levels between start and end. Since there's no more than $E$ edges, the average of inter-level edges is $\sqrt{E}$, which means there should be $2$ levels, where the edge count between these $2$ levels are no more than $\sqrt{E}$. This indicate that there's at most $\sqrt{E}$ flows remained (the bottom neck is edges between these $2$ layer). In each round, we will eliminate at least $1$ flow. So we just need an extra of no more than $\sqrt{E}$ to find all the rest flows. So, in $2 \sqrt{E}$ rounds, we can finish all the iteration. That's $\O{(\sqrt{E})}$ time.
+
+So in all, we finish in $\O(E \sqrt{E}) = \O (E^{3/2})$ time
+
+### 3.b
+
+The proof is similar to 3.a. We have proved that finding a block requires no more than $\O(E)$ time. We just need to indicate that the iteration can finish in no more than $\O(V^{2/3})$ iterations.
+
+Since now  $\text{dist}(s,t) \ge 2V^{2/3}$ in $G^\mathcal{F}$ after $2V^{2/3}$ rounds in $\text{Dinic}$. So, the average sum of $|D_i \cup D_{i + 1}|$ is no more than:  $\dfrac{2 V}{2 V^{2 / 3}} = V^{1/3}$ , which implies that there should exists $|D_i \cup D_{i + 1}| \le V^{1/3} $ . Then we may find that there's strictly less than $V^{1/3} \times V ^{1/3} = V ^{2/3}$ edges between these $2$ levels. As the proof in 3.a, we can claim that the bottom neck is these $2$ layers, and within another $V^{2/3}$ rounds. So in all, our algorithm finish $3 V ^ {2/3}$ rounds.
+
+To sum up, the time complexity is $\O(E V^{2/3})$
+
+## T4
+
+### 4.a
 
