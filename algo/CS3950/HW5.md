@@ -23,7 +23,7 @@ For each $i \in U$, we create a virtual node $x_i$ . For each $A_j \in \mathcal{
 
 In addition, we add a virtual source node $s$ and terminal node $t$, where $s$ connects each $x_i$, and $t$ connects each $y_j$. We assign each edge with capacity of $1$.
 
-Then, we claim that the primal problem exists a solution if and only if this network flow's maximal flow equals to $k$. 
+Then, we claim that the primal problem exists a solution if and only if this network flow's maximal flow equals to $k$.
 
 $\Rightarrow$  If there exists a representative $a_1,\cdots,a_k$, then there exists  $k$ flows from $s \rightarrow x_{a_i} \rightarrow y_i \rightarrow t $ . Since the maximal flow is restricted by $t$ (contains at most $k$ sources), the maximal flow is exactly $k$.
 
@@ -31,7 +31,7 @@ $\Leftarrow$ Similarly, if the maximal flow is exactly $k$, due to the nature of
 
 So, we successfully transform the primal problem into a bipartite graph maximal flow problem, where the capacity of each edge is exactly $1$​.
 
-We have prove in class, $\text{Dinic}$ algorithm runs in $\mathcal{O}(E\sqrt{V})$  time, where $E \le nk + n + k$, and $V \le n + k + 2$. So, we have the time complexity $\mathcal{O}(nk\sqrt{n + k})$ 
+We have prove in class, $\text{Dinic}$ algorithm runs in $\mathcal{O}(E\sqrt{V})$  time, where $E \le nk + n + k$, and $V \le n + k + 2$. So, we have the time complexity $\mathcal{O}(nk\sqrt{n + k})$.
 
 ### 2.b
 
@@ -45,13 +45,13 @@ So, the correctness is guaranteed. Proof similar to 2.a. (keen observation: each
 
 As proved in class, $\text{Dinic}$ in this case has worst time complexity $\mathcal{O}(EV^2)$ where $E \le n + 2k + 2nk$ and $V \le 2n + 2k + 2$. So, the time complexity is $\mathcal{O}((n + k)^2nk)$
 
-However, using the conclusion in T3, we may have $\mathcal{O}(EV^{\frac 2 3}) = \mathcal{O}(nk(n + k)^{\frac 2 3})$ or $\O(E^{\frac 3 2}) = \O(n^{1.5}k^{1.5})$ 
+However, using the conclusion in T3, we may have $\mathcal{O}(EV^{\frac 2 3}) = \mathcal{O}(nk(n + k)^{\frac 2 3})$ or $\O(E^{\frac 3 2}) = \O(n^{1.5}k^{1.5})$.
 
 ## T3
 
 ### 3.a
 
-We divide the proof into $2$ parts, just as the proof of $\text{Dinic}$ .First, we prove that finding a block requires $\mathcal{O}(E)$ times. Then, we prove that there is at most $\mathcal{O}(\sqrt{E})$ round. 
+We divide the proof into $2$ parts, just as the proof of $\text{Dinic}$ .First, we prove that finding a block requires $\mathcal{O}(E)$ times. Then, we prove that there is at most $\mathcal{O}(\sqrt{E})$ round.
 
 First of all, consider the process of finding a block. Each time we find a valid flow, since the weight of the edge is exactly $1$, we will remove all the edges along the path. If in $\text{dfs}$ we fail to find a valid edge, we may delete all the edge on the path. Whatever the case, each edge in the graph will be visited at most once, so finding a block requires just at most $\O(E)$ time.
 
@@ -75,3 +75,41 @@ To sum up, the time complexity is $\O(E V^{2/3})$
 
 ### 4.a
 
+$x_e = 0$ means that an edge $e$ is not chosen, while $x_e =1$ means chosen. $\sum{x_e}\le1$ means that for each vertex, it should be covered by exactly one edge. When $x_e$ can be non-integer, we need  $x_e\ge0$ as the restriction, so that for any valid solution, $x_e\in[0,1]$
+
+### 4.b
+
+The dual is:
+
+$$
+\begin{aligned}
+\text{minimize} & ~\sum_{v \in V} {y_v} \\
+y_u + y_v \ge 1 ~\ &(\forall e = (u,v) \in E)\\
+y_u \ge 0 ~\ &(\forall u \in E)
+\end{aligned}
+$$
+In this case, $y_u = 0$ means a vertex $u$ is not chosen, while $y_u = 1$ means that it is chosen. $y_u + y_v \ge 1$ means for each edge $e$, at least one of its vertices should be chosen. $y_u \ge 0$ is the restriction for non-integer case.
+
+### 4.c
+
+This is always true for any $1 \times 1$ submatrix. We will prove by induction.
+
+If the statement holds for every $k \times k$ submatrix, then consider the case for $n = k +1$. Since on an "edge" column, there are only two rows whose value is $1$. We may start case analysis here:
+
+- Those $2$ rows are not in the $k + 1 \times k + 1$ matrix, then the newly added column is totally zero, which means the determinant is $0$, so it still holds true for $n = k + 1$ in this case.
+- One of the $2$ rows are in the $k + 1 \times k + 1$ matrix. Then, the determinant equals to the determinant of the algebraic cofactor value. Using the induction hypothesis, the value can only be $\pm 1 \times {\pm 1 \text{ or } 0} = {\pm 1 \text{ or } 0}$ . So, the induction hypothesis still holds.
+- For all the edges, the edges are within the matrix, which means that each column contains exactly $2$ entries whose value is $1$, which means all the vertices used in the edges are within the $k + 1 \times k + 1$ submatrix. So these $k + 1$ vertices and $k + 1$ edges make up a subgraph of the original bipartite graph. Of course, the subgroup is bipartite. Since the vertices count equals to edge count, there must exist a circle in the subgraph. Due to the nature of bipartite graph, the circle is an even-sized circle. Suppose the circle is $x_1 \to x_2 \to \cdots \to x_{2t} \to x_1$. Without a loss of generality, we may assume that those $2t$ in-circle edges are placed at $e_1 \cdots e_{2t}$ in the submatrix. Then we may observe that for these columns (denoted as $\vec{e_1}\cdots \vec{e_{2t}}$ ), we have the fact that $\vec{e_1} - \vec{e_2} + \cdots + \vec{e_{2k - 1}} - \vec{e_{2k}} = 0$. So, after some linear transformation, we may get a zero column. We have discussed over this case before, where the determinant equals to $0$. The induction hypothesis still holds.
+
+So, by induction, we may prove that the incident matrix of a bipartite graph is totally unimodular......
+
+### 4.d
+
+We denote incident matrix as $\matrix{A}$. The primal problem is maximize $\sum{x_i}$ restricted by $\matrix{A}\vec{x} \le \vec{1}, \vec{x} \ge 0$, and the dual problem is to maximize $\sum{y_i}$ restricted by $\matrix{A^T}\vec{y} \ge \vec{1}, \vec{y} \ge 0$. Since $A$ is unimodular (and of course, $A^T$), and $\vec{1}$ is an integer vector, the solution to these $LP$ are reached at integer points, which means that the solution of the non-integer solution of $LP$ is exactly the integer solution of $LP$. So, we just need to show the non-integer $LP$ in 4.a and 4.b have the same optimal value. Due to the strong duality, we know the maximal of 4.a is reached when the minimal of the duality, 4.b, is reached, and the optimal value is the same. So, for bipartite graph, 4.a's optimal value is 4.b's optimal value, which means the maximum matching equals the minimum vertex covering.
+
+### 4.e
+
+![alt text](image/HW5/img0.png)
+
+The minimum vertex cover is $3$.
+
+The maximum matching is $2$.
