@@ -25,6 +25,12 @@ signal 信号量(semaphore P V) mutex (semaphore 可以实现 mutex 吗)
 
 看起来很水
 
+[std::conditional_variable](https://en.cppreference.com/w/cpp/thread/condition_variable)
+
+[std::mutex](https://en.cppreference.com/w/cpp/thread/mutex)
+
+[std::semaphore](https://en.cppreference.com/w/cpp/thread/counting_semaphore)
+
 ## 22.第二题 IO
 
 MMIO  DMA(往某些地址写东西)
