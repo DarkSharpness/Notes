@@ -21,7 +21,7 @@ VM (如何查询虚拟机里面的中断) (比如 Windows 要安装一个驱动�
 
 ## 13. 第四题 并发
 
-signal 信号量(semaphore P V) mutex (signal 可以实现 mutex 吗)
+signal 信号量(semaphore P V) mutex (semaphore 可以实现 mutex 吗)
 
 看起来很水
 
