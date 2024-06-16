@@ -54,7 +54,12 @@ p(x) &= \int_{y=0}^{+\infty}p(x,y)dy \\
 &= \begin{cases}
     0, &x \le 0 \\
     2\exp(-2x), &x\gt 0
-    \end{cases}
+    \end{cases} \\
+F(x) &= \int_{y=-\infty}^{x} p(y) \dy \\
+&= \begin{cases}
+    0, &x \le 0 \\
+    1 - \exp(-2x), &x\gt 0
+    \end{cases} \\
 \end{aligned}
 $$
 
@@ -179,9 +184,9 @@ $$
 
 所以不独立，但是考虑 $x^2$ 和 $y^2$ 的概率。
 $$
-p\{x^2 \lt a\} = \frac 1 2 \sqrt{a} \\
-p\{y^2 \lt b\} = \frac 1 2 \sqrt{b} \\
-p\{x^2\lt a, y^2 \lt b\} = \frac 1 4 \sqrt{ab} = p\{x^2 \lt a\} \cdot p\{y^2 \lt b\}
+p\{x^2 \lt a\} = \sqrt{a} \\
+p\{y^2 \lt b\} = \sqrt{b} \\
+p\{x^2\lt a, y^2 \lt b\} = \sqrt{ab} = p\{x^2 \lt a\} \cdot p\{y^2 \lt b\}
 $$
 因此，独立。
 
@@ -274,4 +279,4 @@ P\{\xi_1=k | \xi_1 + \xi_2=n\} = \frac{P\{\xi_1=k\}}{P\{\xi_1 + \xi_2=n\}}
 = \frac{{\lambda_1}^k{\lambda_2}^{n-k}}{(\lambda_1 + \lambda_2)^n} \frac{n!}{(n-k)!k!}
 $$
 
-再化简后，该式即为所求。
+再化简后，该式即为所求。得证
